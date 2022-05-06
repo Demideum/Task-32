@@ -1,0 +1,119 @@
+namespace Task_32
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.CursorVisible = false;
+            bool isPlaying = true;
+
+            char[,] map =
+            {
+                {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#' },
+                {'#',' ','#',' ','#',' ',' ',' ',' ',' ',' ',' ','#',' ',' ',' ',' ',' ',' ','#' },
+                {'#',' ','#',' ','#','x','#',' ',' ',' ','#',' ','#',' ',' ',' ',' ','#',' ','#' },
+                {'#','x','#',' ','#','#','#','#','#',' ','#',' ','#',' ','#',' ',' ','#',' ','#' },
+                {'#',' ','#',' ','#',' ',' ',' ','#','x','#',' ','#','x','#',' ',' ','#',' ','#' },
+                {'#',' ',' ',' ','#',' ',' ',' ','#','#','#',' ','#','#','#',' ',' ','#','x','#' },
+                {'#',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','#','#','#' },
+                {'#',' ','#',' ','#',' ',' ',' ',' ',' ',' ',' ','#','#','#','#',' ',' ',' ','#' },
+                {'#',' ','#',' ','#','#','#',' ','#','#','#',' ',' ',' ',' ','#',' ',' ',' ','#' },
+                {'#','x','#',' ','#','x','#',' ','#',' ','#','#','#','#',' ','#',' ',' ',' ','#' },
+                {'#',' ','#',' ',' ',' ','#','x','#','x',' ',' ',' ',' ',' ','#',' ',' ','x','#' },
+                {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#' },
+            };
+
+            int userX = 6;
+            int userY = 5;
+            int userDriveX = 0; 
+            int userDriveY = 1;
+            int collectX = 0;
+            int allX = 10;
+
+            DrawMap(map);
+
+            while (isPlaying)
+            {
+                if (Console.KeyAvailable)
+                {
+                    ConsoleKeyInfo key = Console.ReadKey(true);
+
+                    ChangeDirection(key, ref userDriveX, ref userDriveY);
+                }
+
+                if (map[userX + userDriveX, userY + userDriveY] != '#')
+                {
+                    CollectX(map, userX, userY, ref collectX);
+
+                    Move(map, '@', ref userX, ref userY, userDriveX, userDriveY);
+                }
+                System.Threading.Thread.Sleep(200);
+
+                if (collectX == allX)
+                {
+                    isPlaying = false;
+                }
+                Console.SetCursorPosition(0, 15);
+                Console.WriteLine($"Собранно: {collectX}/{allX}");
+            }
+
+            Console.SetCursorPosition(0, 18);
+            if (collectX == allX)
+            {
+                Console.WriteLine("Вы победили!");
+            }
+        }
+        
+        static void DrawMap(char[,] map) 
+        {
+            for (int i = 0; i < map.GetLength(0); i++)
+            {
+                for (int j = 0; j < map.GetLength(1); j++)
+                {
+                    Console.Write(map[i, j]);
+                }
+                Console.WriteLine();
+            }
+        }
+        
+        static void ChangeDirection(ConsoleKeyInfo key, ref int driveX, ref int driveY) 
+        {
+            switch (key.Key)
+            {
+                case ConsoleKey.UpArrow:
+                    driveX = -1; driveY = 0;
+                    break;
+                case ConsoleKey.DownArrow:
+                    driveX = 1; driveY = 0;
+                    break;
+                case ConsoleKey.LeftArrow:
+                    driveX = 0; driveY = -1;
+                    break;
+                case ConsoleKey.RightArrow:
+                    driveX = 0; driveY = 1;
+                    break;
+            }
+        }
+        
+        static void Move(char[,] map, char symbol, ref int x, ref int y, int driveX, int driveY) 
+        {
+            Console.SetCursorPosition(y, x);
+            Console.WriteLine(map[x, y]);
+
+            x += driveX;
+            y += driveY;
+
+            Console.SetCursorPosition(y, x);
+            Console.WriteLine(symbol);
+        }
+        
+        static void CollectX(char[,] map, int userX, int userY, ref int collectX)
+        {            
+            if (map[userX, userY] == 'x') 
+            {
+                collectX++;
+                map[userX, userY] = 'o';
+            }
+        }
+    }
+}
