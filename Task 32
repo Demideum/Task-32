@@ -23,11 +23,11 @@ namespace Task_32
                 {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#' },
             };
 
-            int userX = 6;
-            int userY = 5;
+            int userPositionX = 6;
+            int userPositionY = 5;
             int userDriveX = 0; 
             int userDriveY = 1;
-            int collectX = 0;
+            int foundX = 0;
             int allX = 10;
 
             DrawMap(map);
@@ -41,24 +41,24 @@ namespace Task_32
                     ChangeDirection(key, ref userDriveX, ref userDriveY);
                 }
 
-                if (map[userX + userDriveX, userY + userDriveY] != '#')
+                if (map[userPositionX + userDriveX, userPositionY + userDriveY] != '#')
                 {
-                    CollectX(map, userX, userY, ref collectX);
+                    CollectX(map, userPositionX, userPositionY, ref foundX);
 
-                    Move(map, '@', ref userX, ref userY, userDriveX, userDriveY);
+                    Move(map, '@', ref userPositionX, ref userPositionY, userDriveX, userDriveY);
                 }
-                System.Threading.Thread.Sleep(200);
+                System.Threading.Thread.Sleep(150);
 
-                if (collectX == allX)
+                if (foundX == allX)
                 {
                     isPlaying = false;
                 }
                 Console.SetCursorPosition(0, 15);
-                Console.WriteLine($"Собранно: {collectX}/{allX}");
+                Console.WriteLine($"Собранно: {foundX}/{allX}");
             }
 
             Console.SetCursorPosition(0, 18);
-            if (collectX == allX)
+            if (foundX == allX)
             {
                 Console.WriteLine("Вы победили!");
             }
@@ -81,38 +81,42 @@ namespace Task_32
             switch (key.Key)
             {
                 case ConsoleKey.UpArrow:
-                    driveX = -1; driveY = 0;
+                    driveX = -1; 
+                    driveY = 0;
                     break;
                 case ConsoleKey.DownArrow:
-                    driveX = 1; driveY = 0;
+                    driveX = 1; 
+                    driveY = 0;
                     break;
                 case ConsoleKey.LeftArrow:
-                    driveX = 0; driveY = -1;
+                    driveX = 0; 
+                    driveY = -1;
                     break;
                 case ConsoleKey.RightArrow:
-                    driveX = 0; driveY = 1;
+                    driveX = 0; 
+                    driveY = 1;
                     break;
             }
         }
         
-        static void Move(char[,] map, char symbol, ref int x, ref int y, int driveX, int driveY) 
+        static void Move(char[,] map, char symbol, ref int userPositionX, ref int userPositionY, int driveX, int driveY) 
         {
-            Console.SetCursorPosition(y, x);
-            Console.WriteLine(map[x, y]);
+            Console.SetCursorPosition(userPositionY, userPositionX);
+            Console.WriteLine(map[userPositionX, userPositionY]);
 
-            x += driveX;
-            y += driveY;
+            userPositionX += driveX;
+            userPositionY += driveY;
 
-            Console.SetCursorPosition(y, x);
+            Console.SetCursorPosition(userPositionY, userPositionX);
             Console.WriteLine(symbol);
         }
         
-        static void CollectX(char[,] map, int userX, int userY, ref int collectX)
+        static void CollectX(char[,] map, int userPositionX, int userPositionY, ref int collectX)
         {            
-            if (map[userX, userY] == 'x') 
+            if (map[userPositionX, userPositionY] == 'x') 
             {
                 collectX++;
-                map[userX, userY] = 'o';
+                map[userPositionX, userPositionY] = 'o';
             }
         }
     }
